@@ -63,6 +63,6 @@ def test_post_ask_endpoint():
     data = response.json()
     
     # תיקון: אנחנו בודקים שיש שדה 'reply' כי זה מה שה-API מחזיר
-    assert "reply" in data
+    assert "response" in data
     # בדיקה שה-AI אכן ענה משהו רלוונטי על מבני נתונים
-    assert "Data Structures" in data["reply"]
+    assert "Data Structures" in data["response"]
