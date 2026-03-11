@@ -50,7 +50,12 @@ jobs:
           TOOL_PROMPT: ${{ secrets.TOOL_PROMPT }}
           DB_SCHEMA: ${{ secrets.DB_SCHEMA }}
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/smart_campus
-        run: PYTHONPATH=. pytest
+          PYTHONPATH: ${{ github.workspace }}/backend
+        run: |
+          # יצירת הטבלאות והכנסת נתוני הדמו לתוך ה-DB הזמני של ה-CI
+          alembic upgrade head
+          python app/seed.py
+          python -m pytest
         
   frontend-build:
     runs-on: ubuntu-latest

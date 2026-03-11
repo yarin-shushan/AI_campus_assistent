@@ -20,3 +20,15 @@ node_modules/
 out/
 build/
 .DS_Store
+
+# --- macOS ---
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent

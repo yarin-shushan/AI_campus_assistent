@@ -46,19 +46,23 @@ def test_post_ask_endpoint():
     from app.models.user import User
     
     def override_get_current_user():
+        # יצירת משתמש אדמין זמני לטובת הטסט
         return User(id=1, email="test@test.com", hashed_password="pw", role="admin")
         
     app.dependency_overrides[get_current_user] = override_get_current_user
     
-    print("[Test] Sleeping for 4 seconds before endpoint LLM call...")
+    print("[Test] Sleeping to respect rate limits...")
     time.sleep(1)
     
     response = client.post("/chat/ask", json=payload)
     app.dependency_overrides.clear()
     
+    # בדיקה שהסטטוס הוא 200 (הצלחנו להגיע ל-AI)
     assert response.status_code == 200
+    
     data = response.json()
-    assert data["message"] == "Success"
+    
+    # תיקון: אנחנו בודקים שיש שדה 'reply' כי זה מה שה-API מחזיר
     assert "reply" in data
+    # בדיקה שה-AI אכן ענה משהו רלוונטי על מבני נתונים
     assert "Data Structures" in data["reply"]
-
