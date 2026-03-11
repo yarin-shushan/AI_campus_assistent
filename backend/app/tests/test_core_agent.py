@@ -1,6 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
-from app.ai_agent import execute_read_only_query, ask_smart_campus
+from app.ai_agent import ask_smart_campus
+from app.tools.db_tool import execute_read_only_query
 from main import app
 import time
 
