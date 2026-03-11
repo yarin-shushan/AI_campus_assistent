@@ -50,8 +50,8 @@ jobs:
           TOOL_PROMPT: ${{ secrets.TOOL_PROMPT }}
           DB_SCHEMA: ${{ secrets.DB_SCHEMA }}
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/smart_campus
-        run: pytest
-
+        run: PYTHONPATH=. pytest
+        
   frontend-build:
     runs-on: ubuntu-latest
     steps:
