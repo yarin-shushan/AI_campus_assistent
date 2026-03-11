@@ -1,0 +1,22 @@
+# --- Specific Files to Ignore ---
+לוג יום שלישי.docx
+לוג יום שני.docx
+Smart Campus Assistant
+Smart Campus Assistant/
+.env
+env.
+
+# --- Backend (Python / FastAPI) ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# --- Frontend (Node.js / Next.js) ---
+node_modules/
+.next/
+out/
+build/
+.DS_Store

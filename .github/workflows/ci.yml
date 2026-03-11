@@ -1,0 +1,72 @@
+name: Afeka Smart Campus CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    
+    # הקמת דאטה-בייס פוסטגרס זמני נטו לטובת הטסטים
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: smart_campus
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11" 
+
+      - name: Install Backend Dependencies
+        working-directory: ./backend 
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Pytest
+        working-directory: ./backend
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SYSTEM_PROMPT: ${{ secrets.SYSTEM_PROMPT }}
+          TOOL_PROMPT: ${{ secrets.TOOL_PROMPT }}
+          DB_SCHEMA: ${{ secrets.DB_SCHEMA }}
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/smart_campus
+        run: pytest
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Frontend Dependencies
+        working-directory: ./frontend 
+        run: npm install
+
+      - name: Build Next.js App
+        working-directory: ./frontend
+        run: npm run build
