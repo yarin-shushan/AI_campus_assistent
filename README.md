@@ -4,78 +4,79 @@ An intelligent full-stack system designed to assist students at Afeka College. T
 
 ---
 
-## 🚀 Overview
+## 🛠 Tech Stack & Architecture
 
-The **Smart Campus Assistant** acts as a bridge between the student and complex campus systems. Instead of searching through portals, students can simply ask: *"What courses am I registered for?"* or *"Are there any free classrooms in Building Mitchell?"*.
+The project follows a modern **Client-Server** architecture, fully containerized:
 
-### Key Features:
-* **Natural Language Processing**: Built with OpenAI/Gemini to understand student queries.
-* **Live DB Interaction**: The AI generates and executes SQL queries in real-time.
-* **Microservices Architecture**: Fully containerized using Docker.
+* **Frontend**: [Next.js](https://nextjs.org/) / React - Responsive chat interface.
+* **Backend**: [FastAPI](https://fastapi.tiangolo.com/) (Python) - High-performance server-side logic.
+* **Database**: [PostgreSQL](https://www.postgresql.org/) - Managed via [SQLModel](https://sqlmodel.tiangolo.com/).
+* **AI Engine**: OpenAI GPT-4 / Google Gemini 1.5 Pro.
+* **Infrastructure**: [Docker](https://www.docker.com/) & Docker Compose.
 
 ---
 
-## 🛠 Tech Stack
+## 🔐 Security Framework
 
-The project follows a modern **Client-Server** architecture:
+Security was a top priority in this project, implemented across several layers:
 
-* **Frontend**: [Next.js](https://nextjs.org/) / React - A responsive chat interface.
-* **Backend**: [FastAPI](https://fastapi.tiangolo.com/) (Python) - High-performance server-side logic.
-* **Database**: [PostgreSQL](https://www.postgresql.org/) - Managed via [SQLModel](https://sqlmodel.tiangolo.com/) (ORM).
-* **AI Engine**: OpenAI GPT-4 / Google Gemini 1.5 Pro.
-* **Infrastructure**: [Docker](https://www.docker.com/) & Docker Compose for orchestration.
+1.  **Authentication & Authorization**:
+    * **JWT (JSON Web Tokens)**: Secure user sessions and identity verification.
+    * **Password Hashing**: Using `passlib` with `bcrypt` to ensure no plain-text passwords are stored.
+2.  **Infrastructure Security (AWS)**:
+    * **Security Groups**: The RDS database is protected by specific AWS firewall rules, allowing access only to specific IP addresses (Whitelisting).
+    * **Environment Isolation**: Sensitive data such as **API Keys** and **System Prompts** are never hardcoded. They are managed via `.env` files which are excluded from version control (`.gitignore`).
+3.  **Database Protection**:
+    * The AI agent is restricted to **Read-Only** queries where applicable to prevent accidental data manipulation.
+
+---
+
+## 🚀 Deployment
+
+The system is designed for a hybrid-cloud deployment:
+
+* **Frontend**: Deployed on **Vercel** for optimal global delivery and Edge functions support.
+* **Backend**: Containerized with **Docker** and deployed on **AWS App Runner**, providing a scalable, managed environment for the FastAPI server.
+* **Database**: Managed **AWS RDS (PostgreSQL)** instance, ensuring high availability and automated backups.
+* **CI/CD**: Seamless integration between GitHub and the deployment platforms for automated builds.
 
 ---
 
 ## ⚙️ Installation & Running Locally
 
-### ⚠️ Prerequisites - Security Note
-For security reasons, this repository **does not contain**:
-1.  **API Keys**: You must provide your own OpenAI or Gemini keys.
-2.  **AI Prompts**: The system prompts and DB Schemas are stored in a local `.env` file and are not part of the source code.
+### ⚠️ Security Note
+This repository **does not contain** API Keys or AI Prompts. You must provide your own in a local `.env` file.
 
-### Steps to Run:
-
-1.  **Clone the repository:**
+1.  **Clone & Navigate**:
     ```bash
     git clone [https://github.com/your-username/smart-campus-assistant.git](https://github.com/your-username/smart-campus-assistant.git)
     cd smart-campus-assistant
     ```
 
-2.  **Set up Environment Variables:**
-    Create a `.env` file in the root directory and add your credentials:
+2.  **Environment Setup**:
+    Create a `.env` file in the root:
     ```env
-    # AI Config
+    # AI Credentials
     OPENAI_API_KEY=your_key_here
     GEMINI_API_KEY=your_key_here
     
-    # Database Config
+    # DB URL (Local or Remote)
     DATABASE_URL=postgresql://postgres:postgres@db:5432/smart_campus
     
-    # AI System Prompts (Crucial for the Agent to work)
+    # System Instructions (Hidden from Git)
     SYSTEM_PROMPT="You are the official Smart Campus Assistant..."
     DB_SCHEMA="Table Student: id, full_name; Table Course: id, name, code; ..."
     ```
 
-3.  **Run with Docker Compose:**
+3.  **Launch**:
     ```bash
     docker-compose up --build
     ```
 
-4.  **Access the application:**
-    * **Frontend**: `http://localhost:3000`
-    * **Backend API**: `http://localhost:8080`
-
 ---
 
-## 🏗 Architecture Detail
-
-The system is designed with a **Retrieval-Augmented Generation (RAG)** approach:
-1.  The user sends a message via the **Next.js** frontend.
-2.  The **FastAPI** backend injects the **DB Schema** and **System Prompt** from the `.env` file.
-3.  The **AI Provider** analyzes the request and generates a specific SQL query.
-4.  The backend executes the query on the **PostgreSQL** instance and returns the data to the AI.
-5.  The AI formulates a natural language response back to the student.
+## 🏗 Workflow
+1. User asks a question → 2. Backend injects Schema & Prompt → 3. AI generates SQL → 4. Query executes on RDS → 5. AI returns natural language response.
 
 ---
 
